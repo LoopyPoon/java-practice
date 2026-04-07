@@ -66,5 +66,44 @@ public class StreamInterviewTasks {
                 .toList();
 
         System.out.println(duplicates);
+
+        String biggestWord = words.stream()
+                .max(Comparator.comparing(String::length))
+                .orElse("nothing");
+        System.out.println(biggestWord);
+
+        Map<String, Long> wordsCount = words.stream()
+                .collect(Collectors.groupingBy(w -> w, Collectors.counting()));
+        System.out.println(wordsCount);
+
+        List<String> sortedWords = words.stream()
+                .sorted(Comparator.comparingInt(String::length).thenComparing(w -> w))
+                .toList();
+        System.out.println(sortedWords);
+
+        List<String> nameMoreThenOneContacts = contacts.stream()
+                .collect(Collectors.groupingBy(Contact::getName, LinkedHashMap::new, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .filter(stringLongEntry -> stringLongEntry.getValue() > 1)
+                .map(Map.Entry::getKey)
+                .toList();
+        System.out.println(nameMoreThenOneContacts);
+
+        Map<String, String> namePhoneContact = contacts.stream()
+                .collect(Collectors.groupingBy(Contact::getName,
+                        LinkedHashMap::new,
+                        Collectors.mapping(Contact::getPhoneNumber, Collectors.joining(";"))));
+        System.out.println(namePhoneContact);
+
+        Contact findContact = contacts.stream()
+                .filter(contact -> contact.getPhoneNumber().endsWith("5555555"))
+                .findFirst()
+                .orElseThrow();
+        System.out.println(findContact);
+
+        Map<Boolean,List<Contact>> partitioningContacts = contacts.stream()
+                .collect(Collectors.partitioningBy(c -> c.getName().length() <= 4));
+        System.out.println(partitioningContacts);
     }
 }
